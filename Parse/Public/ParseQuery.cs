@@ -56,6 +56,12 @@ namespace Parse {
 
     internal string ClassName { get { return className; } }
 
+    /// <summary>
+    /// Gets the order by keys for this query.
+    /// Returns null if no ordering has been set.
+    /// </summary>
+    public IReadOnlyList<string> OrderByKeys { get { return orderBy; } }
+
     internal static IParseQueryController QueryController {
       get {
         return ParseCorePlugins.Instance.QueryController;

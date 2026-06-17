@@ -105,6 +105,12 @@ namespace Parse.Internal {
           if (t.Exception.InnerException is WebException) {
             var webException = t.Exception.InnerException as WebException;
             response = (HttpWebResponse)webException.Response;
+            // WebException.Response 在超时、DNS失败、连接拒绝等场景下为 null
+            if (response == null) {
+              var tcs = new TaskCompletionSource<Tuple<HttpStatusCode, string>>();
+              tcs.TrySetException(webException);
+              return tcs.Task;
+            }
           } else {
             TaskCompletionSource<Tuple<HttpStatusCode, string>> tcs = new TaskCompletionSource<Tuple<HttpStatusCode, string>>();
             tcs.TrySetException(t.Exception);

@@ -37,7 +37,7 @@ namespace Parse.Internal {
         var oldList = ((ParseAddUniqueOperation)previous).Objects;
         return new ParseAddUniqueOperation((IList<object>)this.Apply(oldList, null));
       }
-      throw new InvalidOperationException("Operation is invalid after previous operation.");
+      throw new InvalidOperationException("ParseAddUniqueOperation is invalid after previous operation: " + previous.GetType().Name);
     }
 
     public object Apply(object oldValue, string key) {

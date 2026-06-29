@@ -62,7 +62,7 @@ namespace Parse.Internal {
         return this;
       }
       if (previous is ParseDeleteOperation) {
-        throw new InvalidOperationException("You can't modify a relation after deleting it.");
+        throw new InvalidOperationException("You can't modify a relation after deleting it. TargetClassName: " + targetClassName);
       }
       var other = previous as ParseRelationOperation;
       if (other != null) {
@@ -76,7 +76,8 @@ namespace Parse.Internal {
         var newRemove = removes.Union(other.removes.Except(adds)).ToList();
         return new ParseRelationOperation(newAdd, newRemove, TargetClassName);
       }
-      throw new InvalidOperationException("Operation is invalid after previous operation.");
+      throw new InvalidOperationException("ParseRelationOperation is invalid after previous operation: " +
+          previous.GetType().Name + ", TargetClassName: " + targetClassName);
     }
 
     public object Apply(object oldValue, string key) {
@@ -96,7 +97,8 @@ namespace Parse.Internal {
         oldRelation.TargetClassName = targetClassName;
         return oldRelation;
       }
-      throw new InvalidOperationException("Operation is invalid after previous operation.");
+      throw new InvalidOperationException("ParseRelationOperation.Apply is invalid: oldValue type is " +
+          (oldValue == null ? "null" : oldValue.GetType().FullName) + ", key: " + key + ", TargetClassName: " + targetClassName);
     }
 
     public string TargetClassName { get { return targetClassName; } }
@@ -105,7 +107,7 @@ namespace Parse.Internal {
       foreach (var obj in objects) {
         if (obj.ObjectId == null) {
           throw new ArgumentException(
-            "You can't add an unsaved ParseObject to a relation.");
+            "You can't add an unsaved ParseObject to a relation. ClassName: " + obj.ClassName);
         }
         if (obj.ClassName != targetClassName) {
           throw new ArgumentException(string.Format(

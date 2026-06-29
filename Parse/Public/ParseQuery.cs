@@ -789,7 +789,7 @@ namespace Parse {
       return FirstOrDefaultAsync(cancellationToken).OnSuccess(t => {
         if (t.Result == null) {
           throw new ParseException(ParseException.ErrorCode.ObjectNotFound,
-            "No results matched the query.");
+            "No results matched the query. ClassName: " + className);
         }
         return t.Result;
       });
@@ -838,7 +838,7 @@ namespace Parse {
         var result = t.Result.FirstOrDefault();
         if (result == null) {
           throw new ParseException(ParseException.ErrorCode.ObjectNotFound,
-            "Object with the given objectId not found.");
+            "Object with the given objectId not found. ClassName: " + className + ", ObjectId: " + objectId);
         }
         return result;
       });

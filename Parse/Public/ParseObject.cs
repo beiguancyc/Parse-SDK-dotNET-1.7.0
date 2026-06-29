@@ -399,7 +399,7 @@ string propertyName
 
       // Clear out any changes on this object.
       if (operationSetQueue.Count != 1) {
-        throw new InvalidOperationException("Attempt to MergeFromObject during save.");
+        throw new InvalidOperationException("Attempt to MergeFromObject during save. ClassName: " + ClassName + ", ObjectId: " + (ObjectId ?? "(null)") + ", operationSetQueue.Count: " + operationSetQueue.Count);
       }
       operationSetQueue.Clear();
       foreach (var operationSet in other.operationSetQueue) {
@@ -583,7 +583,7 @@ string propertyName
           Task toAwait, CancellationToken cancellationToken) {
       return toAwait.OnSuccess(_ => {
         if (ObjectId == null) {
-          throw new InvalidOperationException("Cannot refresh an object that hasn't been saved to the server.");
+          throw new InvalidOperationException("Cannot refresh an object that hasn't been saved to the server. ClassName: " + ClassName);
         }
 
         return ObjectController.FetchAsync(state, ParseUser.CurrentSessionToken, cancellationToken);
@@ -765,7 +765,8 @@ string propertyName
         IEnumerable<T> objects, bool force, Task toAwait, CancellationToken cancellationToken) where T : ParseObject {
       return toAwait.OnSuccess(_ => {
         if (objects.Any(obj => { return obj.state.ObjectId == null; })) {
-          throw new InvalidOperationException("You cannot fetch objects that haven't already been saved.");
+          var unsavedObj = objects.First(obj => obj.state.ObjectId == null);
+          throw new InvalidOperationException("You cannot fetch objects that haven't already been saved. Unsaved object ClassName: " + unsavedObj.ClassName);
         }
 
         var objectsToFetch = (from obj in objects
@@ -892,7 +893,7 @@ string propertyName
           scopedSeenNew = new HashSet<ParseObject>(new IdentityEqualityComparer<ParseObject>());
         } else {
           if (seenNew.Contains(obj)) {
-            throw new InvalidOperationException("Found a circular dependency while saving");
+            throw new InvalidOperationException("Found a circular dependency while saving. ClassName: " + obj.ClassName + ", ObjectId: " + (obj.ObjectId ?? "(unsaved)"));
           }
           scopedSeenNew = new HashSet<ParseObject>(seenNew, new IdentityEqualityComparer<ParseObject>());
           scopedSeenNew.Add(obj);
@@ -1324,7 +1325,7 @@ string propertyName
       lock (mutex) {
         if (!CheckIsDataAvailable(key)) {
           throw new InvalidOperationException(
-              "ParseObject has no data for this key. Call FetchIfNeededAsync() to get the data.");
+              "ParseObject has no data for key \"" + key + "\". ClassName: " + ClassName + ", ObjectId: " + (ObjectId ?? "(null)") + ". Call FetchIfNeededAsync() to get the data.");
         }
       }
     }

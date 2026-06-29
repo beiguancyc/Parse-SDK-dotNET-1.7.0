@@ -117,7 +117,7 @@ namespace Parse.Internal {
       if (previous is ParseSetOperation) {
         var otherAmount = ((ParseSetOperation)previous).Value;
         if (otherAmount is string) {
-          throw new InvalidOperationException("Cannot increment a non-number type.");
+          throw new InvalidOperationException("Cannot increment a non-number type. Current value is a string: \"" + otherAmount + "\"");
         }
         var myAmount = amount;
         return new ParseSetOperation(Add(otherAmount, myAmount));
@@ -127,12 +127,12 @@ namespace Parse.Internal {
         object myAmount = amount;
         return new ParseIncrementOperation(Add(otherAmount, myAmount));
       }
-      throw new InvalidOperationException("Operation is invalid after previous operation.");
+      throw new InvalidOperationException("ParseIncrementOperation is invalid after previous operation: " + previous.GetType().Name);
     }
 
     public object Apply(object oldValue, string key) {
       if (oldValue is string) {
-        throw new InvalidOperationException("Cannot increment a non-number type.");
+        throw new InvalidOperationException("Cannot increment a non-number type. Key: " + key + ", current value is a string: \"" + oldValue + "\"");
       }
       object otherAmount = oldValue ?? 0;
       object myAmount = amount;

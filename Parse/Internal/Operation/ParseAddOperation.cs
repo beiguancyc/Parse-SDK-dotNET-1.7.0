@@ -35,7 +35,7 @@ namespace Parse.Internal {
       if (previous is ParseAddOperation) {
         return new ParseAddOperation(((ParseAddOperation)previous).Objects.Concat(objects));
       }
-      throw new InvalidOperationException("Operation is invalid after previous operation.");
+      throw new InvalidOperationException("ParseAddOperation is invalid after previous operation: " + previous.GetType().Name);
     }
 
     public object Apply(object oldValue, string key) {

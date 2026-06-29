@@ -20,8 +20,7 @@ namespace Parse.Internal {
 
     protected override IDictionary<string, object> EncodeParseObject(ParseObject value) {
       if (value.ObjectId == null) {
-        // TODO (hallucinogen): handle local id. For now we throw.
-        throw new ArgumentException("Cannot create a pointer to an object without an objectId");
+        throw new ArgumentException("Cannot create a pointer to an object without an objectId. ClassName: " + value.ClassName);
       }
 
       return new Dictionary<string, object> {

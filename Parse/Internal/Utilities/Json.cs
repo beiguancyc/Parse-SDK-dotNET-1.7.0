@@ -326,7 +326,8 @@ namespace Parse.Internal {
           parser.CurrentIndex == input.Length) {
         return output;
       }
-      throw new ArgumentException("Input JSON was invalid.");
+      string truncatedInput = input.Length <= 200 ? input : input.Substring(0, 200) + "...(truncated, total length: " + input.Length + ")";
+      throw new ArgumentException("Input JSON was invalid. Input: " + truncatedInput);
     }
 
     /// <summary>
@@ -336,7 +337,7 @@ namespace Parse.Internal {
     /// </summary>
     public static string Encode(IDictionary<string, object> dict) {
       if (dict == null) {
-        throw new ArgumentNullException();
+        throw new ArgumentNullException("dict", "Cannot encode a null dictionary to JSON.");
       }
       if (dict.Count == 0) {
         return "{}";
@@ -359,7 +360,7 @@ namespace Parse.Internal {
     /// </summary>
     public static string Encode(IList<object> list) {
       if (list == null) {
-        throw new ArgumentNullException();
+        throw new ArgumentNullException("list", "Cannot encode a null list to JSON.");
       }
       if (list.Count == 0) {
         return "[]";

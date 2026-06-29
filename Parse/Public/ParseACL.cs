@@ -63,7 +63,7 @@ namespace Parse {
 
     private void SetAccess(AccessKind kind, string userId, bool allowed) {
       if (userId == null) {
-        throw new ArgumentException("Cannot set access for an unsaved user or role.");
+        throw new ArgumentException("Cannot set access for an unsaved user or role. AccessKind: " + kind + ", allowed: " + allowed);
       }
       ICollection<string> target = null;
       switch (kind) {
@@ -74,7 +74,7 @@ namespace Parse {
           target = writers;
           break;
         default:
-          throw new NotImplementedException("Unknown AccessKind");
+          throw new NotImplementedException("Unknown AccessKind: " + kind);
       }
       if (allowed) {
         target.Add(userId);
@@ -85,7 +85,7 @@ namespace Parse {
 
     private bool GetAccess(AccessKind kind, string userId) {
       if (userId == null) {
-        throw new ArgumentException("Cannot get access for an unsaved user or role.");
+        throw new ArgumentException("Cannot get access for an unsaved user or role. AccessKind: " + kind);
       }
       switch (kind) {
         case AccessKind.Read:
@@ -93,7 +93,7 @@ namespace Parse {
         case AccessKind.Write:
           return writers.Contains(userId);
         default:
-          throw new NotImplementedException("Unknown AccessKind");
+          throw new NotImplementedException("Unknown AccessKind: " + kind);
       }
     }
 

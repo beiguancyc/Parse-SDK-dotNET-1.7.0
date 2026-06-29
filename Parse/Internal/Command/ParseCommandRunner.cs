@@ -25,8 +25,11 @@ namespace Parse.Internal {
         var contentString = response.Item2;
         int responseCode = (int)response.Item1;
         if (responseCode >= 500) {
-          // Server error, return InternalServerError.
-          throw new ParseException(ParseException.ErrorCode.InternalServerError, response.Item2);
+          string truncatedBody = contentString == null ? "(null)" :
+              (contentString.Length <= 200 ? contentString :
+              contentString.Substring(0, 200) + "...(truncated, total length: " + contentString.Length + ")");
+          throw new ParseException(ParseException.ErrorCode.InternalServerError,
+              "Server error (HTTP " + responseCode + "): " + truncatedBody);
         } else if (contentString != null) {
           IDictionary<string, object> contentJson = null;
           try {
@@ -37,8 +40,11 @@ namespace Parse.Internal {
               contentJson = Json.Parse(contentString) as IDictionary<string, object>;
             }
           } catch (Exception e) {
+            string truncatedContent = contentString.Length <= 200
+                ? contentString
+                : contentString.Substring(0, 200) + "...(truncated, total length: " + contentString.Length + ")";
             throw new ParseException(ParseException.ErrorCode.OtherCause,
-                "Invalid response from server", e);
+                "Invalid response from server (HTTP " + responseCode + "): " + truncatedContent, e);
           }
           if (responseCode < 200 || responseCode > 299) {
             int code = (int)(contentJson.ContainsKey("code") ? (long)contentJson["code"] : (int)ParseException.ErrorCode.OtherCause);

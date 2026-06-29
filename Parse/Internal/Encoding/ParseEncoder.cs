@@ -92,7 +92,8 @@ namespace Parse.Internal {
 #endif
       foreach (var item in list) {
         if (!IsValidType(item)) {
-          throw new ArgumentException("Invalid type for value in an array");
+          throw new ArgumentException("Invalid type for value in an array: " +
+              (item == null ? "null" : item.GetType().FullName));
         }
         newArray.Add(Encode(item));
       }

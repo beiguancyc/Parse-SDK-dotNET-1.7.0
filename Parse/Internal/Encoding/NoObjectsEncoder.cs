@@ -19,7 +19,9 @@ namespace Parse.Internal {
     }
 
     protected override IDictionary<string, object> EncodeParseObject(ParseObject value) {
-      throw new ArgumentException("ParseObjects not allowed here.");
+      throw new ArgumentException("ParseObjects not allowed here. ClassName: " +
+          (value == null ? "null" : value.ClassName) + ", ObjectId: " +
+          (value == null ? "null" : (value.ObjectId ?? "(unsaved)")));
     }
   }
 }

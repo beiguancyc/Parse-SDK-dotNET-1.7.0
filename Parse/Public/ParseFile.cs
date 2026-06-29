@@ -126,7 +126,7 @@ namespace Parse {
     IDictionary<string, object> IJsonConvertible.ToJSON() {
       if (this.IsDirty) {
         throw new InvalidOperationException(
-          "ParseFile must be saved before it can be serialized.");
+          "ParseFile must be saved before it can be serialized. Name: " + (Name ?? "(null)"));
       }
       return new Dictionary<string, object> {
         {"__type", "File"},

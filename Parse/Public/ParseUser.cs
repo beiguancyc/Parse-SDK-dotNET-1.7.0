@@ -245,7 +245,7 @@ namespace Parse {
     internal override Task SaveAsync(Task toAwait, CancellationToken cancellationToken) {
       lock (mutex) {
         if (ObjectId == null) {
-          throw new InvalidOperationException("You must call SignUpAsync before calling SaveAsync.");
+          throw new InvalidOperationException("You must call SignUpAsync before calling SaveAsync. Username: " + (Username ?? "(null)"));
         }
         return base.SaveAsync(toAwait, cancellationToken).OnSuccess(_ => {
           if (!CurrentUserController.IsCurrent(this)) {

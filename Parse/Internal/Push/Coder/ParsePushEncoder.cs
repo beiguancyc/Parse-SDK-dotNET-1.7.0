@@ -16,10 +16,10 @@ namespace Parse.Internal {
 
     public IDictionary<string, object> Encode(IPushState state) {
       if (state.Alert == null && state.Data == null) {
-        throw new InvalidOperationException("A push must have either an Alert or Data");
+        throw new InvalidOperationException("A push must have either an Alert or Data. Both Alert and Data are null.");
       }
       if (state.Channels == null && state.Query == null) {
-        throw new InvalidOperationException("A push must have either Channels or a Query");
+        throw new InvalidOperationException("A push must have either Channels or a Query. Both Channels and Query are null. Alert: " + (state.Alert ?? "(null)"));
       }
 
       var data = state.Data ?? new Dictionary<string, object> { { "alert", state.Alert } };
